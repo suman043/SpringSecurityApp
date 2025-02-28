@@ -22,7 +22,6 @@ public class AppSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
 
         //logic
-
         http
                         .csrf(request->request.disable())
                         .authorizeHttpRequests(request-> request
