@@ -23,6 +23,14 @@ public class AppSecurityConfig {
 
         //logic
 
+        http
+                        .csrf(request->request.disable())
+                        .authorizeHttpRequests(request-> request
+                        .requestMatchers("/register")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated());
+
         return http.build();
     }
 
