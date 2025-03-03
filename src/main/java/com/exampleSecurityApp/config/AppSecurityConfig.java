@@ -1,5 +1,6 @@
 package com.exampleSecurityApp.config;
 
+import com.exampleSecurityApp.filter.JwtFilter;
 import com.exampleSecurityApp.service.CustomerService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,10 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +22,9 @@ public class AppSecurityConfig {
 
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
@@ -53,8 +59,15 @@ public class AppSecurityConfig {
                         .requestMatchers("/register","/login")
                         .permitAll()
                         .anyRequest()
-                        .authenticated());
+                        .authenticated())
 
+                        // for JWT Implementation
+                        //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                        .sessionManagement(request
+                                ->request.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        
+        http.
+                        addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

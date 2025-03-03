@@ -2,6 +2,7 @@ package com.exampleSecurityApp.controller;
 
 import com.exampleSecurityApp.entity.Customer;
 import com.exampleSecurityApp.service.CustomerService;
+import com.exampleSecurityApp.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,9 @@ public class CustomerRestController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerCustomer(@RequestBody Customer customer){
@@ -48,10 +52,12 @@ public class CustomerRestController {
 
             // Generate JWT and send to the client
             // Add here
-            return new ResponseEntity<>("Welcome",HttpStatus.OK);
+            String jwt = jwtUtil.generateToken(customer.getEmail());
+
+            return new ResponseEntity<>(jwt,HttpStatus.OK);
         }
         else{
-            return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Invalid Credentials", HttpStatus.BAD_REQUEST);
         }
     }
 }
