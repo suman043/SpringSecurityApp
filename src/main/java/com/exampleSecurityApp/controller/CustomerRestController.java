@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,5 +61,13 @@ public class CustomerRestController {
         else{
             return new ResponseEntity<>("Invalid Credentials", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> testAccess() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName(); // Extract authenticated user's email
+
+        return new ResponseEntity<>("Access granted! Authenticated as: " + userEmail, HttpStatus.OK);
     }
 }
