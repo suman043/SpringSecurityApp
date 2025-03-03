@@ -45,6 +45,9 @@ public class CustomerRestController {
 
         boolean authenticatedStatus = authenticate.isAuthenticated();
         if(authenticatedStatus){
+
+            // Generate JWT and send to the client
+            // Add here
             return new ResponseEntity<>("Welcome",HttpStatus.OK);
         }
         else{
